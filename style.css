@@ -113,11 +113,12 @@
         gap: 5px;
     }
     #corpo {
-        display: flex;
+        display: none;
     }
-    .btnSmall {
-        width: 40px;
-        padding: 5px;
+    #loading {
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
     }
 
     /* Telas menores */

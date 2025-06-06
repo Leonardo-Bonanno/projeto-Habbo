@@ -16,6 +16,11 @@
     <button class="btn btn-primary" onclick="buscarAvatar()">Buscar Avatar</button>
   </div>
   <br>
+
+  <div id="loading" style="display: none; text-align: center; margin-top: 40px;">
+    <l-square size="40" stroke="4" speed="1.2" color="white"></l-square>
+  </div>
+
   <div id="corpo">
     <div class="caixa col-12 col-lg-8" id="coluna-maior">
       <div class="caixa-perfil caixa " id="caixa-dados">
@@ -45,7 +50,8 @@
       </div>
     </div>
   </div>
-    <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/ldrs/dist/auto/square.js"></script>
+  <script src="script.js"></script>
   </body>
 </html>
