@@ -1,135 +1,160 @@
 @font-face {
-  font-family: 'Volter';
-  src: url('fonts/Volter.woff2') format('woff2'),
-       url('fonts/Volter.woff') format('woff');
+  font-family: "Volter";
+  src: url("fonts/Volter.woff2") format("woff2"),
+    url("fonts/Volter.woff") format("woff");
   font-weight: normal;
   font-style: normal;
 }
 
-    body {
-        font-family: Arial, sans-serif;
-        padding: 2rem;
-        background-color: #0c3a65;
-        }
-    input[type="text"] {
-        border-radius: 5px;
-        padding: 10px;
-        font-size: 16px;
-        margin-bottom: 20px;
-    }
-    h3 {
-        text-align: left;
-    }
-    .emblema {
-        border: none;
-        width: 40px;
-        height: 40px;
-        image-rendering: pixelated;
-    }
-    .img {
-        align-self: start;
-        border: 2px solid #333;
-        border-radius: 8px;
-        background: white;
-    }
-    .caixa-input {
-        background-color: #0b6395;
-        border-radius: 5px;
-        padding: 5px;
-        text-align: center;
-        color: #E9E9E1;
-    }
-    .caixa-perfil {
-        padding: 15px;
-        border-radius: 5px;
-        font-family: 'Volter', monospace;
-        background-color: #E9E9E1;
-        font-size: 18px;
-    }
-    .caixa-gap {
-        background-color: #0c3a65;
-        border-radius: 5px;
-        font-family: 'Volter', monospace;
-    }
-    .info-amigo {
-        font-size: 18px;
-        text-align: start;
-    }
-    .perfil-container {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        gap: 5px;
-        width: 100%;
-        padding: 5px;
-        border-radius: 8px;
-        background-color: #AEAEAE;
-    }
-    .caixa {
-        flex: wrap;
-        align-items: flex-start;
-        margin-bottom: 15px;
-    }
-    .lines {
-        display: flex;
-    }
-    #todos-amigos {
-        display: flex;
-        flex-direction: row;
-        align-items: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
-    #caixa-emblemas {
-        background-color: #AEAEAE;
-        border-radius: 5px;
-        padding: 5px;
-        display: flex;
-        gap: 5px;
-        flex-wrap: nowrap;
-        width: 230px;
-        min-height: 60px;
-        margin-top: 10px;
-        justify-content: center;
-    }
-    #progress {
-        width: 100%;
-        background-color: #AEAEAE;
-        border-radius: 5px;
-    }
-    #bar {
-        width: 0%;
-        height: 10px;
-        background-color: rgb(57, 179, 57);
-        border-radius: 5px;
-    }
-    #caixa-dados {
-        display: flex;
-        flex-wrap: wrap;
-    }
-    #todos-emblemas {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-    }
-    #corpo {
-        display: none;
-    }
-    #loading {
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 10px;
-    }
+body {
+  font-family: Arial, sans-serif;
+  padding: 2rem;
+  background-color: #0c3a65;
+}
+input[type="text"] {
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+h3 {
+  text-align: left;
+}
+.emblema {
+  border: none;
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+}
+.img {
+  align-self: start;
+  border: 2px solid #333;
+  border-radius: 8px;
+  background: white;
+}
+.caixa-input {
+  background-color: #0b6395;
+  border-radius: 5px;
+  padding: 5px;
+  text-align: center;
+  color: #e9e9e1;
+}
+.profile {
+  padding: 15px;
+  border-radius: 5px;
+  font-family: "Volter", monospace;
+  background-color: #e9e9e1;
+  font-size: 18px;
+}
+.caixa-gap {
+  background-color: #0c3a65;
+  border-radius: 5px;
+  font-family: "Volter", monospace;
+}
+.info-amigo {
+  font-size: 18px;
+  text-align: start;
+}
+.perfil-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 5px;
+  width: 100%;
+  padding: 5px;
+  border-radius: 8px;
+  background-color: #aeaeae;
+}
+.caixa {
+  flex: wrap;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+.lines {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+.perfil-direita {
+  display: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+.btn-perfil {
+  width: 40px;
+  padding: 5px;
+}
+#todos-amigos {
+  display: flex;
+  flex-direction: row;
+  align-items: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+#caixa-emblemas {
+  background-color: #aeaeae;
+  border-radius: 5px;
+  padding: 15px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: nowrap;
+  width: 230px;
+  min-height: 60px;
+  margin-top: 10px;
+  justify-content: center;
+}
+#progress {
+  width: 100%;
+  background-color: #aeaeae;
+  border-radius: 5px;
+}
+#bar {
+  width: 0%;
+  height: 10px;
+  background-color: rgb(57, 179, 57);
+  border-radius: 5px;
+}
+#caixa-dados {
+  display: flex;
+  flex-wrap: wrap;
+}
+#titulo-emblemas {
+  margin: 0;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#achTurn {
+  flex-shrink: 0;
+  padding: 4px 8px;
+}
+#todos-emblemas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+#corpo {
+  display: none;
+  flex-wrap: wrap;
+}
+#loading {
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
 
-    /* Telas menores */
+/* Telas menores */
 
-    @media (max-width: 576px) {
-        .emblema {
-            width: 40px;
-            height: 40px;
-        }
-        #caixa-emblemas {
-                width: 230px;
-                min-height: 50px;
-        }
-    }
+@media (max-width: 576px) {
+  .emblema {
+    width: 40px;
+    height: 40px;
+  }
+  #caixa-emblemas {
+    width: 230px;
+    min-height: 50px;
+  }
+}
