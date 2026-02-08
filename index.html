@@ -126,9 +126,10 @@
           <button
             id="toggleAchBtn"
             class="btn btn-sm btn-outline-secondary"
+            data-bs-toggle="button"
           >
             <img
-              src="/assets/images/achievements.png"
+              src="assets/images/achievements.png"
               title="Esconder conquistas"
             />
           </button>
@@ -142,26 +143,30 @@
           <button
             id="toggleFriendsBtn"
             class="btn btn-sm btn-outline-secondary"
+            data-bs-toggle="button"
           >
-            <img
-              src="/assets/images/friends.png"
-              title="Somente online"
-            />
+            <img src="assets/images/friends.png" title="Somente online" />
           </button>
         </div>
         <div id="friends-list" class="friends-grid"></div>
       </div>
 
       <div class="secondaryBox tab-pane fade" id="tab-rooms">
-        <h1 id="roomsTitle">Quartos:</h1>
-        <div id="rooms-list"></div>
+        <div class="tab-header">
+          <h1 id="roomsTitle">Quartos:</h1>
+        </div>
+        <div id="rooms-list" class="rooms-grid"></div>
       </div>
 
       <div class="secondaryBox tab-pane fade" id="tab-groups">
-        <h1 id="groupsTitle">Grupos:</h1>
-        <div id="groups-list"></div>
+        <div class="tab-header">
+          <h1 id="groupsTitle">Grupos:</h1>
+        </div>
+        <div id="groups-list" class="groups-grid"></div>
       </div>
     </div>
+
+    <button id="backToTop" class="back-to-top" title="Voltar ao topo">↑</button>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script

@@ -1,5 +1,6 @@
 const habboInput = document.getElementById("habboInput");
 const btnSearchInfo = document.getElementById("btnSearchUser");
+const backToTopBtn = document.getElementById("backToTop");
 
 const charImg = document.getElementById("char-img");
 const username = document.getElementById("nickname");
@@ -21,6 +22,8 @@ let achShow = true;
 let allBadgesCache = [];
 let friendsOn = false;
 let allFriendsCache = [];
+let allRoomsCache = [];
+let allGroupsCache = [];
 
 btnSearchInfo.addEventListener("click", async () => {
   document.getElementById("loading").style.display = "flex";
@@ -32,11 +35,18 @@ btnSearchInfo.addEventListener("click", async () => {
   if (data.profileVisible) {
     const badges = await fetchUserBadges(data.uniqueId);
     const friends = await fetchUserFriends(data.uniqueId);
-  
+    const rooms = await fetchUserRooms(data.uniqueId);
+    const groups = await fetchUserGroups(data.uniqueId);
+    
     allBadgesCache = badges;
-    allFriendsCache = friends
+    allFriendsCache = friends;
+    allRoomsCache = rooms;
+    allGroupsCache = groups;
+
     renderBadges();
     renderFriends();
+    renderRooms();
+    renderGroups();
   }
 
   document.getElementById("loading").style.display = "none";
@@ -44,20 +54,20 @@ btnSearchInfo.addEventListener("click", async () => {
 
 // PERFIL
 function renderProfile(data) {
-    charImg.src = `https://www.habbo.com.br/habbo-imaging/avatarimage?figure=${data.figureString}&size=l`;
-    username.textContent = data.name;
-    motto.textContent = data.motto;
+  charImg.src = `https://www.habbo.com.br/habbo-imaging/avatarimage?figure=${data.figureString}&size=l`;
+  username.textContent = data.name;
+  motto.textContent = data.motto;
 
-    lastSeen.textContent = data.lastAccessTime
-      ? `🕒 Último login: ${new Date(data.lastAccessTime).toLocaleDateString("pt-BR")}`
-      : "🕒 Último login: Status desativado";
-    if (data.profileVisible) {
-      createData.innerHTML = `📅 <b>Criação:</b> ${new Date(data.memberSince).toLocaleDateString("pt-BR")}`;
-      level.innerHTML = `⭐ <b>Nível:</b> ${data.currentLevel}`;
-      online.textContent = data.online ? "🟢 Online" : "🔴 Offline";
+  lastSeen.textContent = data.lastAccessTime
+    ? `🕒 Último login: ${new Date(data.lastAccessTime).toLocaleDateString("pt-BR")}`
+    : "🕒 Último login: Status desativado";
+  if (data.profileVisible) {
+    createData.innerHTML = `📅 <b>Criação:</b> ${new Date(data.memberSince).toLocaleDateString("pt-BR")}`;
+    level.innerHTML = `⭐ <b>Nível:</b> ${data.currentLevel}`;
+    online.textContent = data.online ? "🟢 Online" : "🔴 Offline";
 
-      loadSelectedBadges(data.selectedBadges);
-    }
+    loadSelectedBadges(data.selectedBadges);
+  }
 }
 
 // Emblemas
@@ -82,7 +92,7 @@ function loadSelectedBadges(badges = []) {
       slot.setAttribute("data-bs-html", "true");
       slot.setAttribute(
         "data-bs-title",
-        `<strong>${badge.name}</strong><br>Código: ${badge.code}<br>${badge.description}`
+        `<strong>${badge.name}</strong><br>Código: ${badge.code}<br>${badge.description}`,
       );
     }
 
@@ -94,7 +104,7 @@ function loadSelectedBadges(badges = []) {
 
 function renderBadges() {
   const filtered = allBadgesCache.filter(
-    badge => achShow || !badge.code.startsWith("ACH_")
+    (badge) => achShow || !badge.code.startsWith("ACH_"),
   );
 
   loadAllBadges(filtered);
@@ -116,13 +126,14 @@ function loadAllBadges(badges = []) {
     slot.setAttribute("data-bs-html", "true");
     slot.setAttribute(
       "data-bs-title",
-      `<strong>${badge.name}</strong><br>Código: ${badge.code}<br>${badge.description}`
+      `<strong>${badge.name}</strong><br>Código: ${badge.code}<br>${badge.description}`,
     );
 
     badgesList.appendChild(slot);
   });
 
-  document.getElementById("badgesTitle").textContent = `Emblemas (${badges.length}):`;
+  document.getElementById("badgesTitle").textContent =
+    `Emblemas (${badges.length}):`;
 
   initTooltips();
 }
@@ -130,7 +141,7 @@ function loadAllBadges(badges = []) {
 // AMIGOS
 function renderFriends() {
   const filtered = allFriendsCache.filter(
-    friend => !friendsOn || friend.online
+    (friend) => !friendsOn || friend.online,
   );
 
   loadAllFriends(filtered);
@@ -163,13 +174,131 @@ function loadAllFriends(friends = []) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
+    card.setAttribute("data-bs-toggle", "tooltip");
+    card.setAttribute("data-bs-html", "true");
+    card.setAttribute(
+      "data-bs-title",
+      `Deseja pesquisar <strong>${friend.name}</strong>?`,
+    );
+
     friendsList.appendChild(card);
   });
 
   document.getElementById("friendsTitle").textContent =
-    `Amigos (${friends.length})`;
+    `Amigos (${friends.length}):`;
 
   initTooltips();
+}
+
+// QUARTOS
+function renderRooms() {
+  loadAllRooms(allRoomsCache);
+}
+
+function loadAllRooms(rooms = []) {
+  const roomsList = document.getElementById("rooms-list");
+  roomsList.innerHTML = "";
+
+  rooms.forEach((room) => {
+    const card = document.createElement("div");
+    card.className = "room-card";
+
+    /* thumbnail */
+    const img = document.createElement("img");
+    img.src = room.thumbnailUrl || "assets/images/roomPlaceholder.png";
+    img.onerror = () => {
+      img.src = "assets/images/roomPlaceholder.png";
+    };
+    img.className = "room-thumb";
+
+    /* info */
+    const info = document.createElement("div");
+    info.className = "room-info";
+
+    const title = document.createElement("strong");
+    title.textContent = room.name;
+
+    const desc = document.createElement("span");
+    desc.textContent = room.description || "";
+
+    const date = document.createElement("small");
+    date.textContent =
+      "Data de criação: " +
+      new Date(room.creationTime).toLocaleDateString("pt-BR");
+
+    /* tags */
+    const tagsBox = document.createElement("div");
+    tagsBox.className = "room-tags";
+
+    room.tags.forEach((tag) => {
+      const tagEl = document.createElement("span");
+      tagEl.className = "room-tag";
+      tagEl.textContent = tag;
+      tagsBox.appendChild(tagEl);
+    });
+
+    info.append(title, desc, date, tagsBox);
+    card.append(img, info);
+
+    roomsList.appendChild(card);
+  });
+
+  document.getElementById("roomsTitle").textContent =
+    `Quartos (${rooms.length})`;
+}
+
+// GROUPS
+function renderGroups() {
+  loadAllGroups(allGroupsCache);
+}
+
+function loadAllGroups(groups = []) {
+  const groupsList = document.getElementById("groups-list");
+  groupsList.innerHTML = "";
+
+  groups.forEach(group => {
+    const card = document.createElement("div");
+    card.className = "group-card";
+
+    /* badge */
+    const badge = document.createElement("img");
+    badge.className = "group-badge";
+    badge.src = `https://www.habbo.com.br/habbo-imaging/badge/${group.badgeCode}.gif`;
+
+    /* info */
+    const info = document.createElement("div");
+    info.className = "group-info";
+
+    const title = document.createElement("strong");
+    title.textContent = group.name;
+
+    const desc = document.createElement("span");
+    desc.textContent = group.description || "";
+
+    /* cores */
+    const colors = document.createElement("div");
+    colors.className = "group-colors";
+
+    const primary = document.createElement("div");
+    primary.className = "color-box";
+    primary.style.background = `#${group.primaryColour}`;
+    primary.title = `Primária #${group.primaryColour}`;
+
+    const secondary = document.createElement("div");
+    secondary.className = "color-box";
+    secondary.style.background = `#${group.secondaryColour}`;
+    secondary.title = `Secundária #${group.secondaryColour}`;
+
+    colors.append(primary, secondary);
+
+    info.append(title, desc, colors);
+    card.append(badge, info);
+
+    groupsList.appendChild(card);
+  });
+
+  document.getElementById("groupsTitle").textContent =
+    `Grupos (${groups.length})`;
 }
 
 
@@ -177,9 +306,7 @@ function loadAllFriends(friends = []) {
 toggleAchBtn.addEventListener("click", () => {
   achShow = !achShow;
 
-  toggleAchBtn.title = achShow
-    ? "Ocultar conquistas"
-    : "Mostrar conquistas";
+  toggleAchBtn.title = achShow ? "Ocultar conquistas" : "Mostrar conquistas";
 
   renderBadges();
 });
@@ -187,41 +314,67 @@ toggleAchBtn.addEventListener("click", () => {
 toggleFriendsBtn.addEventListener("click", () => {
   friendsOn = !friendsOn;
 
-  toggleFriendsBtn.title = friendsOn
-    ? "Somente online"
-    : "Todos amigos";
+  toggleFriendsBtn.title = friendsOn ? "Somente online" : "Todos amigos";
 
   renderFriends();
 });
 
-// FETCHs
+// FETCHs (no futuro terão menos fetchs)
 async function fetchUserData(username) {
   const res = await fetch(
-    `https://www.habbo.com.br/api/public/users?name=${username}`
+    `https://www.habbo.com.br/api/public/users?name=${username}`,
   );
   return res.json();
 }
 
 async function fetchUserBadges(id) {
   const res = await fetch(
-    `https://www.habbo.com.br/api/public/users/${id}/badges`
+    `https://www.habbo.com.br/api/public/users/${id}/badges`,
   );
   return res.json();
 }
 
 async function fetchUserFriends(id) {
   const res = await fetch(
-    `https://www.habbo.com.br/api/public/users/${id}/friends`
+    `https://www.habbo.com.br/api/public/users/${id}/friends`,
+  );
+  return res.json();
+}
+
+async function fetchUserRooms(id) {
+  const res = await fetch(
+    `https://www.habbo.com.br/api/public/users/${id}/rooms`,
+  );
+  return res.json();
+}
+async function fetchUserGroups(id) {
+  const res = await fetch(
+    `https://www.habbo.com.br/api/public/users/${id}/groups`
   );
   return res.json();
 }
 
 // Bootstrap funcs
 function initTooltips() {
-  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
     new bootstrap.Tooltip(el, {
       html: true,
-      placement: "top"
+      placement: "top",
     });
   });
 }
+
+window.addEventListener("scroll", () => {
+  if (window.scrollY > 300) {
+    backToTopBtn.style.display = "flex";
+  } else {
+    backToTopBtn.style.display = "none";
+  }
+});
+
+backToTopBtn.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+});
