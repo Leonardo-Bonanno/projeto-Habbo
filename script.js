@@ -1,187 +1,89 @@
-let achShow = true;
-let onlineShow = false;
-let badgesGlobal = [];
-let friendsGlobal = [];
+const habboInput = document.getElementById("habboInput");
+const btnSearchInfo = document.getElementById("btnSearchUser");
 
-async function buscarAvatar(nomeParametro) {
-  document.getElementById("content").style.display = "none";
-  document.getElementById("loading").style.display = "flex"; // Mostrar loader
+const charImg = document.getElementById("char-img");
+const username = document.getElementById("nickname");
+const motto = document.getElementById("motto-text");
+const lastSeen = document.getElementById("last-seen");
+const createData = document.getElementById("create-data");
+const level = document.getElementById("level");
+const online = document.getElementById("online");
+const equipedBadges = document.getElementById("equiped-badges");
 
-  const nome = nomeParametro || document.getElementById("habboInput").value.trim();
-  const dados = document.getElementById("caixa-dados");
-  const emblemas = document.getElementById("todos-emblemas");
-  const amigos = document.getElementById("todos-amigos");
-  const tituloEmblemas = document.getElementById("titulo-emblemas");
-  const tituloAmigos = document.getElementById("titulo-amigos");
-  achShow;
+btnSearchInfo.addEventListener("click", async () => {
+  const user = habboInput.value;
+  document.getElementById("loading").style.display = "flex";
 
-  dados.innerHTML = "";
-  emblemas.innerHTML = "";
-  amigos.innerHTML = "";
-  tituloEmblemas.textContent = "Emblemas:";
-  tituloAmigos.textContent = "Amigos:";
+  const res = await fetch(
+    `https://www.habbo.com.br/api/public/users?name=${user}`,
+  );
+  const data = await res.json();
 
-  if (!nome) {
-    dados.innerHTML = "<p>Por favor, insira um nome válido.</p>";
-    document.getElementById("loading").style.display = "none";
-    return;
+  document.getElementById("loading").style.display = "none";
+
+  if (data.profileVisible) {
+    charImg.src = `https://www.habbo.com.br/habbo-imaging/avatarimage?figure=${data.figureString}&size=l`;
+    username.innerHTML = data.name;
+    motto.innerHTML = data.motto;
+    lastSeen.textContent = data.lastAccessTime
+      ? `🕒 Último login: ${new Date(data.lastAccessTime).toLocaleDateString("pt-BR")}`
+      : "🕒 Último login: Status desativado";
+    createData.innerHTML = `📅 <b>Criação:</b> ${new Date(data.memberSince).toLocaleDateString("pt-BR")}`;
+    level.innerHTML = `⭐ <b>Nível:</b> ${data.currentLevel}`;
+    online.innerHTML = `${data.online ? "🟢 Online" : "🔴 Offline"}`;
+    loadSelectedBadges(data.selectedBadges);
+  } else {
+    charImg.src = `https://www.habbo.com.br/habbo-imaging/avatarimage?figure=${data.figureString}&size=l`;
+    username.innerHTML = data.name;
+    motto.innerHTML = data.motto;
+    createData.innerHTML = `📅 Criação: Perfil privado`;
   }
+});
 
-  try {
-    const res = await fetch(
-      `https://www.habbo.com.br/api/public/users?name=${nome}`
-    );
-    if (!res.ok) throw new Error("Habbo não encontrado");
-    const data = await res.json();
+function loadSelectedBadges(badges = []) {
+  equipedBadges.innerHTML = "";
 
-    const imgUrl = `https://www.habbo.com.br/habbo-imaging/avatarimage?figure=${data.figureString}&size=l`;
-    let levelPercentage = data.currentLevelCompletePercent;
+  const maxSlots = 5;
 
-    if (data.profileVisible) {
-      // Carregar dados de emblemas e amigos...
-      const badgeRes = await fetch(
-        `https://www.habbo.com.br/api/public/users/${data.uniqueId}/badges`
+  for (let i = 0; i < maxSlots; i++) {
+    const slot = document.createElement("div");
+    slot.classList.add("badge-slot");
+
+    if (badges[i]) {
+      const badge = badges[i];
+
+      const img = document.createElement("img");
+      img.src = `https://images.habbo.com/c_images/album1584/${badge.code}.gif`;
+
+      slot.appendChild(img);
+
+      slot.setAttribute("data-bs-toggle", "tooltip");
+      slot.setAttribute("data-bs-placement", "left");
+      slot.setAttribute(
+        "data-bs-title",
+        `
+        <div style="text-align:left">
+          <strong>${badge.name}</strong><br>
+          <small>Código: ${badge.code}</small><br>
+          <span style="font-size:12px">${badge.description}</span>
+        </div>
+        `
       );
-      const badges = await badgeRes.json();
-      badgesGlobal = badges;
-
-      const friendRes = await fetch(
-        `https://www.habbo.com.br/api/public/users/${data.uniqueId}/friends`
-      );
-      const friends = await friendRes.json();
-      friendsGlobal = friends;
-
-      const onlineFriends = friends.filter((friend) => friend.online);
-      const offlineFriends = friends.filter((friend) => !friend.online);
-
-      const renderFriendHTML = (friend) => `
-                <div class="perfil-container">
-                    <div class="col-9">
-                        <p class="info-amigo">${friend.name}</p>
-                        <p class="info-amigo">${
-                          friend.online ? "🟢 Online" : "🔴 Offline"
-                        }</p>
-                        <a href="#" onclick="buscarAvatar('${
-                          friend.name
-                        }')" class="link-perfil">Ver perfil</a>
-                    </div>
-                    <div class="col-3">
-                        <img class="img img-fluid" src="https://www.habbo.com.br/habbo-imaging/avatarimage?direction=4&head_direction=3&action=wav&gesture=sml&size=m&user=${
-                          friend.name
-                        }" alt="Avatar de ${friend.name}">
-                    </div>
-                </div>
-            `;
-
-      let totalFriendsHTML = "";
-      onlineFriends.forEach(
-        (friend) => (totalFriendsHTML += renderFriendHTML(friend))
-      );
-      offlineFriends.forEach(
-        (friend) => (totalFriendsHTML += renderFriendHTML(friend))
-      );
-      amigos.innerHTML = totalFriendsHTML;
-
-      dados.innerHTML = `
-                <div class="perfil-esquerda d-flex flex-column align-items-left col-9">
-                    <div class="d-flex flex-row align-items-start mb-3">
-                        <div class="me-3 col-3">
-                            <img src="${imgUrl}" class="img img-fluid" alt="Avatar do Habbo" style="max-width: 120px;">
-                        </div>
-                        <div id="caixa-emblemas">
-                            ${data.selectedBadges
-                              .map(
-                                (b) =>
-                                  `<img src="https://images.habbo.com/c_images/album1584/${b.code}.gif" class="emblema" title="${b.name}\n\n ${b.description}" alt="${b.name}">`
-                              )
-                              .join("")}
-                        </div>
-                    </div>
-                        <div class="dados-info col-6">
-                            <p><b>${data.name}</b></p>
-                            <p><b>Missão:</b> ${data.motto || ""}</p>
-                            <p><b>Criado em:</b> ${new Date(
-                              data.memberSince
-                            ).toLocaleDateString("pt-BR")}</p>
-                            <p>${data.online ? "🟢 Online" : "🔴 Offline"}</p>
-                            <p><b>⬆️ Nível:</b> ${data.currentLevel}</p>
-                            <div id="progress"><div id="bar" style="width: ${levelPercentage}%"></div></div>
-                            <p><b>💠Estrelas:</b> ${data.starGemCount}</p>
-                    </div>
-                </div>
-                <div class="perfil-direita col-3" hidden>
-                    <button class="btn btn-primary mt-3 btn-perfil">placeholder</button>
-                    <button class="btn btn-primary mt-3 btn-perfil">placeholder</button>
-                    <button class="btn btn-primary mt-3 btn-perfil">placeholder</button>
-                </div>
-            `;
-
-      tituloEmblemas.textContent = `Emblemas: (${badges.length})`;
-      tituloAmigos.textContent = `Amigos: (${friends.length})`;
-      emblemas.innerHTML = carregarEmblemas(badgesGlobal);
-    } else {
-      dados.innerHTML = `
-                <div class="d-flex flex-column align-items-center">
-                    <div class="d-flex flex-row align-items-start mb-3">
-                        <div class="me-3">
-                            <img src="${imgUrl}" class="img img-fluid" alt="Avatar do Habbo" style="max-width: 120px;">
-                        </div>
-                        <div class="dados-info">
-                            <p><b>${data.name}</b></p>
-                            <p><b>Missão:</b> ${data.motto || ""}</p>
-                            <p style="color: red;">Este perfil é fechado ou está banido</p>
-                        </div>
-                    </div>
-                </div>
-            `;
     }
-  } catch (err) {
-    dados.innerHTML = `<p style="color: red;">Erro: ${err.message}</p>`;
+    equipedBadges.appendChild(slot);
   }
 
-  document.getElementById("content").style.display = "flex"; // mostrar o content completo
-  document.getElementById("loading").style.display = "none"; // Esconder loader ao final
+  initTooltips();
 }
 
-function carregarEmblemas(listaDeEmblemas) {
-  let html =
-    '<div style="display: flex; flex-wrap: wrap; gap: 5px; text-align: center;">';
 
-  listaDeEmblemas.forEach((emblema) => {
-    if (!achShow && emblema.code.startsWith("ACH_")) return;
-    const badgeUrl = `https://images.habbo.com/c_images/album1584/${emblema.code}.gif`;
-    html += `<img src="${badgeUrl}" class="emblema" title="${emblema.name}\n\n${emblema.description}" alt="${emblema.name}" width="40" height="40">`;
-  });
-
-  html += "</div>";
-  return html;
-}
-
-/*function carregarAmigos(listaDeAmigos) {
-    let html = 
-}*/
-
-function achChange() {
-  achShow = !achShow;
-  const emblemas = document.getElementById("todos-emblemas");
-  const tituloEmblemas = document.getElementById("titulo-emblemas");
-
-  const emblemasFiltrados = badgesGlobal.filter(
-    (emblema) => achShow || !emblema.code.startsWith("ACH_")
-  );
-
-  emblemas.innerHTML = carregarEmblemas(emblemasFiltrados);
-  tituloEmblemas.textContent = `Emblemas: (${emblemasFiltrados.length})`;
-}
-
-function friendsChange() {
-  onlineShow = !onlineShow;
-  const amigos = document.getElementById("todos-amigos");
-  const tituloEmblemas = document.getElementById("titulo-emblemas");
-
-  const amigosOnline = friendsGlobal.filter(
-    (friend) => friendShow || !friend.online == true
-  );
-
-  amigos.innerHTML = totalFriendsHTML;
+function initTooltips() {
+  document
+    .querySelectorAll('[data-bs-toggle="tooltip"]')
+    .forEach(el => {
+      new bootstrap.Tooltip(el, {
+        html: true,
+        placement: "right"
+      });
+    });
 }

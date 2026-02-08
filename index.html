@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -16,9 +16,7 @@
       <p>Digite o nome do Habbo:</p>
       <input type="text" id="habboInput" placeholder="Ex: NomeDoHabbo" />
       <br />
-      <button class="btn btn-primary" onclick="buscarAvatar()">
-        Buscar Avatar
-      </button>
+      <button class="btn btn-primary" id="btnSearchUser">Buscar Avatar</button>
     </div>
     <br />
 
@@ -28,47 +26,79 @@
     >
       <l-square size="40" stroke="4" speed="1.2" color="white"></l-square>
     </div>
-
     <div id="content">
-      <div class="caixa col-12" id="coluna-maior">
-        <div class="profile" id="caixa-dados"></div>
+      <div class="container">
+        <div class="main-infos">
+          <div class="photo">
+            <img src="assets/images/avatarPlaceholder.png" id="char-img" />
+          </div>
 
-        <div class="caixa-perfil" id="emblemas">
-          <div class="lines">
-            <h3 id="titulo-emblemas">Emblemas:</h3>
-            <button
-              class="btn btn-outline-secondary"
-              id="achTurn"
-              data-bs-toggle="button"
-              onclick="achChange()"
-            >
+          <div class="motto">
+            <h2 id="nickname"></h2>
+            <p id="motto-text"></p>
+          </div>
+
+          <div class="infos">
+            <p id="create-data"></p>
+            <p id="last-seen"></p>
+            <p id="level"></p>
+            <p class="online" id="online"></p>
+          </div>
+        </div>
+
+        <div class="extra-infos">
+          <div class="equiped-badges" id="equiped-badges">
+            <div class="badge-slot"></div>
+            <div class="badge-slot"></div>
+            <div class="badge-slot"></div>
+            <div class="badge-slot"></div>
+            <div class="badge-slot"></div>
+          </div>
+
+          <div class="buttons-area">
+            <button class="btn-icon">
               <img
-                title="Esconder conquistas"
-                src="assets\images\conquistas.png"
+                src="assets/images/achievements.png"
+                alt="Emblemas"
+                title="Emblemas"
+              />
+            </button>
+            <button class="btn-icon">
+              <img
+                src="assets\images\friends.png"
+                alt="Amigos"
+                title="Amigos"
+              />
+            </button>
+            <button class="btn-icon">
+              <img
+                src="assets/images/rooms.png"
+                alt="Quartos"
+                title="Quartos"
+              />
+            </button>
+            <button class="btn-icon">
+              <img src="assets/images/group.png" alt="Grupos" title="Grupos" />
+            </button>
+            <button class="btn-icon">
+              <img
+                src="assets/images/levelprogression.png"
+                alt="Nível"
+                title="Informações de nível"
+              />
+            </button>
+            <button class="btn-icon">
+              <img
+                src="assets/images/box.png"
+                alt="Em breve"
+                title="Em breve"
               />
             </button>
           </div>
-          <br />
-          <div id="todos-emblemas"></div>
         </div>
       </div>
-
-      <div class="caixa-gap caixa d-none d-lg-block col-lg-1"></div>
-
-      <div class="caixa-perfil" id="caixa-amigos">
-        <h3 id="titulo-amigos">Amigos:</h3>
-        <button
-          class="btn btn-outline-secondary"
-          id="friendsTurn"
-          data-bs-toggle="button"
-          onclick="friendsChange()"
-        >
-          <img title="Esconder offline" src="assets\images\amigos.png" />
-        </button>
-        <br />
-        <div id="todos-amigos"></div>
-      </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script
       type="module"
