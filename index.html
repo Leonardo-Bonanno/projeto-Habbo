@@ -26,7 +26,7 @@
     >
       <l-square size="40" stroke="4" speed="1.2" color="white"></l-square>
     </div>
-    <div id="content">
+    <div class="box">
       <div class="container">
         <div class="main-infos">
           <div class="photo">
@@ -55,29 +55,49 @@
             <div class="badge-slot"></div>
           </div>
 
-          <div class="buttons-area">
-            <button class="btn-icon">
+          <div class="nav buttons-area">
+            <button
+              class="btn-icon"
+              data-bs-toggle="tab"
+              data-bs-target="#tab-badges"
+              type="button"
+            >
               <img
                 src="assets/images/achievements.png"
                 alt="Emblemas"
                 title="Emblemas"
               />
             </button>
-            <button class="btn-icon">
+            <button
+              class="btn-icon"
+              data-bs-toggle="tab"
+              data-bs-target="#tab-friends"
+              type="button"
+            >
               <img
                 src="assets\images\friends.png"
                 alt="Amigos"
                 title="Amigos"
               />
             </button>
-            <button class="btn-icon">
+            <button
+              class="btn-icon"
+              data-bs-toggle="tab"
+              data-bs-target="#tab-rooms"
+              type="button"
+            >
               <img
                 src="assets/images/rooms.png"
                 alt="Quartos"
                 title="Quartos"
               />
             </button>
-            <button class="btn-icon">
+            <button
+              class="btn-icon"
+              data-bs-toggle="tab"
+              data-bs-target="#tab-groups"
+              type="button"
+            >
               <img src="assets/images/group.png" alt="Grupos" title="Grupos" />
             </button>
             <button class="btn-icon">
@@ -96,6 +116,33 @@
             </button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="tab-content tabs-content">
+      <div class="secondaryBox tab-pane fade" id="tab-badges">
+        <div class="badges-header">
+          <h1 id="badgesTitle">Emblemas:</h1>
+          <button id="toggleAchBtn" class="btn btn-sm btn-outline-secondary">
+            <img src="/assets/images/achievements.png" title="Esconder conquistas">
+          </button>
+        </div>
+        <div div id="badges-list"></div>
+      </div>
+
+      <div class="secondaryBox tab-pane fade" id="tab-friends">
+        <h1 id="friendsTitle">Amigos:</h1>
+        <div id="friends-list"></div>
+      </div>
+
+      <div class="secondaryBox tab-pane fade" id="tab-rooms">
+        <h1 id="roomsTitle">Quartos:</h1>
+        <div id="rooms-list"></div>
+      </div>
+
+      <div class="secondaryBox tab-pane fade" id="tab-groups">
+        <h1 id="groupsTitle">Grupos:</h1>
+        <div id="groups-list"></div>
       </div>
     </div>
 

@@ -8,38 +8,51 @@ const lastSeen = document.getElementById("last-seen");
 const createData = document.getElementById("create-data");
 const level = document.getElementById("level");
 const online = document.getElementById("online");
+
 const equipedBadges = document.getElementById("equiped-badges");
+const badgesList = document.getElementById("badges-list");
+const toggleAchBtn = document.getElementById("toggleAchBtn");
+
+// CONTROLE
+let achShow = true;
+let allBadgesCache = [];
 
 btnSearchInfo.addEventListener("click", async () => {
-  const user = habboInput.value;
   document.getElementById("loading").style.display = "flex";
 
-  const res = await fetch(
-    `https://www.habbo.com.br/api/public/users?name=${user}`,
-  );
-  const data = await res.json();
+  const data = await fetchUserData(habboInput.value);
 
-  document.getElementById("loading").style.display = "none";
+  renderProfile(data);
 
   if (data.profileVisible) {
+    const badges = await fetchUserBadges(data.uniqueId);
+  
+    allBadgesCache = badges;
+    renderBadges();
+  }
+
+  document.getElementById("loading").style.display = "none";
+});
+
+// PERFIL
+function renderProfile(data) {
     charImg.src = `https://www.habbo.com.br/habbo-imaging/avatarimage?figure=${data.figureString}&size=l`;
-    username.innerHTML = data.name;
-    motto.innerHTML = data.motto;
+    username.textContent = data.name;
+    motto.textContent = data.motto;
+
     lastSeen.textContent = data.lastAccessTime
       ? `🕒 Último login: ${new Date(data.lastAccessTime).toLocaleDateString("pt-BR")}`
       : "🕒 Último login: Status desativado";
-    createData.innerHTML = `📅 <b>Criação:</b> ${new Date(data.memberSince).toLocaleDateString("pt-BR")}`;
-    level.innerHTML = `⭐ <b>Nível:</b> ${data.currentLevel}`;
-    online.innerHTML = `${data.online ? "🟢 Online" : "🔴 Offline"}`;
-    loadSelectedBadges(data.selectedBadges);
-  } else {
-    charImg.src = `https://www.habbo.com.br/habbo-imaging/avatarimage?figure=${data.figureString}&size=l`;
-    username.innerHTML = data.name;
-    motto.innerHTML = data.motto;
-    createData.innerHTML = `📅 Criação: Perfil privado`;
-  }
-});
+    if (data.profileVisible) {
+      createData.innerHTML = `📅 <b>Criação:</b> ${new Date(data.memberSince).toLocaleDateString("pt-BR")}`;
+      level.innerHTML = `⭐ <b>Nível:</b> ${data.currentLevel}`;
+      online.textContent = data.online ? "🟢 Online" : "🔴 Offline";
 
+      loadSelectedBadges(data.selectedBadges);
+    }
+}
+
+// Emblemas
 function loadSelectedBadges(badges = []) {
   equipedBadges.innerHTML = "";
 
@@ -58,32 +71,86 @@ function loadSelectedBadges(badges = []) {
       slot.appendChild(img);
 
       slot.setAttribute("data-bs-toggle", "tooltip");
-      slot.setAttribute("data-bs-placement", "left");
+      slot.setAttribute("data-bs-html", "true");
       slot.setAttribute(
         "data-bs-title",
-        `
-        <div style="text-align:left">
-          <strong>${badge.name}</strong><br>
-          <small>Código: ${badge.code}</small><br>
-          <span style="font-size:12px">${badge.description}</span>
-        </div>
-        `
+        `<strong>${badge.name}</strong><br>Código: ${badge.code}<br>${badge.description}`
       );
     }
+
     equipedBadges.appendChild(slot);
   }
 
   initTooltips();
 }
 
+function renderBadges() {
+  const filtered = allBadgesCache.filter(
+    badge => achShow || !badge.code.startsWith("ACH_")
+  );
 
+  loadAllBadges(filtered);
+}
+
+function loadAllBadges(badges = []) {
+  badgesList.innerHTML = "";
+
+  badges.forEach((badge) => {
+    const slot = document.createElement("div");
+    slot.classList.add("badge-slot");
+
+    const img = document.createElement("img");
+    img.src = `https://images.habbo.com/c_images/album1584/${badge.code}.gif`;
+
+    slot.appendChild(img);
+
+    slot.setAttribute("data-bs-toggle", "tooltip");
+    slot.setAttribute("data-bs-html", "true");
+    slot.setAttribute(
+      "data-bs-title",
+      `<strong>${badge.name}</strong><br>Código: ${badge.code}<br>${badge.description}`
+    );
+
+    badgesList.appendChild(slot);
+  });
+
+  document.getElementById("badgesTitle").textContent = `Emblemas (${badges.length}):`;
+
+  initTooltips();
+}
+
+// BOTÃO FILTRO ACH_
+toggleAchBtn.addEventListener("click", () => {
+  achShow = !achShow;
+
+  toggleAchBtn.title = achShow
+    ? "Ocultar conquistas"
+    : "Mostrar conquistas";
+
+  renderBadges();
+});
+
+// FETCHs
+async function fetchUserData(username) {
+  const res = await fetch(
+    `https://www.habbo.com.br/api/public/users?name=${username}`
+  );
+  return res.json();
+}
+
+async function fetchUserBadges(id) {
+  const res = await fetch(
+    `https://www.habbo.com.br/api/public/users/${id}/badges`
+  );
+  return res.json();
+}
+
+// Bootstrap funcs
 function initTooltips() {
-  document
-    .querySelectorAll('[data-bs-toggle="tooltip"]')
-    .forEach(el => {
-      new bootstrap.Tooltip(el, {
-        html: true,
-        placement: "right"
-      });
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+    new bootstrap.Tooltip(el, {
+      html: true,
+      placement: "top"
     });
+  });
 }
