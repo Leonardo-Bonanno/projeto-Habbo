@@ -121,18 +121,35 @@
 
     <div class="tab-content tabs-content">
       <div class="secondaryBox tab-pane fade" id="tab-badges">
-        <div class="badges-header">
+        <div class="tab-header">
           <h1 id="badgesTitle">Emblemas:</h1>
-          <button id="toggleAchBtn" class="btn btn-sm btn-outline-secondary">
-            <img src="/assets/images/achievements.png" title="Esconder conquistas">
+          <button
+            id="toggleAchBtn"
+            class="btn btn-sm btn-outline-secondary"
+          >
+            <img
+              src="/assets/images/achievements.png"
+              title="Esconder conquistas"
+            />
           </button>
         </div>
         <div div id="badges-list"></div>
       </div>
 
       <div class="secondaryBox tab-pane fade" id="tab-friends">
-        <h1 id="friendsTitle">Amigos:</h1>
-        <div id="friends-list"></div>
+        <div class="tab-header">
+          <h1 id="friendsTitle">Amigos:</h1>
+          <button
+            id="toggleFriendsBtn"
+            class="btn btn-sm btn-outline-secondary"
+          >
+            <img
+              src="/assets/images/friends.png"
+              title="Somente online"
+            />
+          </button>
+        </div>
+        <div id="friends-list" class="friends-grid"></div>
       </div>
 
       <div class="secondaryBox tab-pane fade" id="tab-rooms">

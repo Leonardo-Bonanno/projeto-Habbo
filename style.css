@@ -194,3 +194,42 @@ h3 {
   gap: 8px;
   justify-content: start;
 }
+
+/* All friends */
+#friends-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  justify-content: start;
+}
+
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.friend-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: #aeaeae;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.friend-card:hover {
+  transform: scale(1.03);
+}
+
+.friend-card img {
+  width: 60px;
+}
+
+.char {
+  border-radius: 10px;
+  border: 2px solid #333;
+  background: white;
+}
