@@ -448,6 +448,25 @@ function initTooltips(scope = document) {
   });
 }
 
+const levelModal = new bootstrap.Modal(document.getElementById("levelModal"));
+
+document.getElementById("btnLevel").addEventListener("click", () => {
+  levelModal.show();
+  initPopovers();
+});
+
+function initPopovers() {
+  document
+    .querySelectorAll('[data-bs-toggle="popover"]')
+    .forEach(el => {
+      new bootstrap.Popover(el, {
+        trigger: "hover focus",
+        html: true,
+        placement: "top"
+      });
+    });
+}
+
 window.addEventListener("scroll", () => {
   if (window.scrollY > 300) {
     backToTopBtn.style.display = "flex";
@@ -463,8 +482,3 @@ backToTopBtn.addEventListener("click", () => {
   });
 });
 
-const levelModal = new bootstrap.Modal(document.getElementById("levelModal"));
-
-document.getElementById("btnLevel").addEventListener("click", () => {
-  levelModal.show();
-});

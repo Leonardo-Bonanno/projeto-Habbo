@@ -8,6 +8,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -63,10 +64,7 @@
               type="button"
               title="Emblemas"
             >
-              <img
-                src="assets/images/achievements.png"
-                alt="Emblemas"
-              />
+              <img src="assets/images/achievements.png" alt="Emblemas" />
             </button>
             <button
               class="btn-icon"
@@ -75,10 +73,7 @@
               type="button"
               title="Amigos"
             >
-              <img
-                src="assets\images\friends.png"
-                alt="Amigos"
-              />
+              <img src="assets\images\friends.png" alt="Amigos" />
             </button>
             <button
               class="btn-icon"
@@ -87,10 +82,7 @@
               type="button"
               title="Quartos"
             >
-              <img
-                src="assets/images/rooms.png"
-                alt="Quartos"
-              />
+              <img src="assets/images/rooms.png" alt="Quartos" />
             </button>
             <button
               class="btn-icon"
@@ -101,17 +93,16 @@
             >
               <img src="assets/images/group.png" alt="Grupos" />
             </button>
-            <button class="btn-icon" title="Progresso de nível" id="btnLevel" type="button">
-              <img
-                src="assets/images/levelprogression.png"
-                alt="Nível"
-              />
+            <button
+              class="btn-icon"
+              title="Progresso de nível"
+              id="btnLevel"
+              type="button"
+            >
+              <img src="assets/images/levelprogression.png" alt="Nível" />
             </button>
-            <button class="btn-icon" title="Em breve..." >
-              <img
-                src="assets/images/box.png"
-                alt="Em breve"
-              />
+            <button class="btn-icon" title="Em breve...">
+              <img src="assets/images/box.png" alt="Em breve" />
             </button>
           </div>
         </div>
@@ -171,11 +162,29 @@
         <div class="modal-content level-modal">
           <div class="modal-header">
             <h5 class="modal-title">Info de nível</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
+
+            <div class="modal-actions">
+              <button
+                class="help-btn"
+                data-bs-toggle="popover"
+                data-bs-trigger="click"
+                data-bs-content="
+        <strong>Aviso</strong> <br>
+        <strong>Conquistas:</strong> soma dos níveis (aproximado) <br>
+        <strong>Emblemas:</strong> quantidade total<br>
+        <strong>Atividade + Mobi:</strong> divisão do restante<br><br>
+        Tudo é baseado na <b>Pontuação total</b> fornecido pelo Habbo.
+      "
+              >
+                <i class="bi bi-question-circle"></i>
+              </button>
+
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+              ></button>
+            </div>
           </div>
 
           <div class="modal-body">
