@@ -37,7 +37,8 @@ btnSearchInfo.addEventListener("click", async () => {
     const friends = await fetchUserFriends(data.uniqueId);
     const rooms = await fetchUserRooms(data.uniqueId);
     const groups = await fetchUserGroups(data.uniqueId);
-    
+    const achievements = await fetchUserAch(data.uniqueId);
+
     allBadgesCache = badges;
     allFriendsCache = friends;
     allRoomsCache = rooms;
@@ -47,12 +48,19 @@ btnSearchInfo.addEventListener("click", async () => {
     renderFriends();
     renderRooms();
     renderGroups();
+    renderLevelInfo(
+      data.totalExperience,
+      data.currentLevelCompletePercent,
+      achievements,
+      badges,
+    );
   }
 
   document.getElementById("loading").style.display = "none";
 });
 
 // PERFIL
+////////////////////////////////
 function renderProfile(data) {
   charImg.src = `https://www.habbo.com.br/habbo-imaging/avatarimage?figure=${data.figureString}&size=l`;
   username.textContent = data.name;
@@ -71,6 +79,7 @@ function renderProfile(data) {
 }
 
 // Emblemas
+////////////////////////////////
 function loadSelectedBadges(badges = []) {
   equipedBadges.innerHTML = "";
 
@@ -88,11 +97,13 @@ function loadSelectedBadges(badges = []) {
 
       slot.appendChild(img);
 
-      slot.setAttribute("data-bs-toggle", "tooltip");
-      slot.setAttribute("data-bs-html", "true");
-      slot.setAttribute(
-        "data-bs-title",
-        `<strong>${badge.name}</strong><br>Código: ${badge.code}<br>${badge.description}`,
+      createTooltip(
+        slot,
+        `
+      <strong>${badge.name}</strong><br>
+      Código: ${badge.code}<br>
+      ${badge.description}
+      `,
       );
     }
 
@@ -122,11 +133,13 @@ function loadAllBadges(badges = []) {
 
     slot.appendChild(img);
 
-    slot.setAttribute("data-bs-toggle", "tooltip");
-    slot.setAttribute("data-bs-html", "true");
-    slot.setAttribute(
-      "data-bs-title",
-      `<strong>${badge.name}</strong><br>Código: ${badge.code}<br>${badge.description}`,
+    createTooltip(
+      slot,
+      `
+      <strong>${badge.name}</strong><br>
+      Código: ${badge.code}<br>
+      ${badge.description}
+      `,
     );
 
     badgesList.appendChild(slot);
@@ -139,6 +152,7 @@ function loadAllBadges(badges = []) {
 }
 
 // AMIGOS
+////////////////////////////////
 function renderFriends() {
   const filtered = allFriendsCache.filter(
     (friend) => !friendsOn || friend.online,
@@ -174,11 +188,11 @@ function loadAllFriends(friends = []) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
 
-    card.setAttribute("data-bs-toggle", "tooltip");
-    card.setAttribute("data-bs-html", "true");
-    card.setAttribute(
-      "data-bs-title",
-      `Deseja pesquisar <strong>${friend.name}</strong>?`,
+    createTooltip(
+      card,
+      `
+      Deseja pesquisar <strong>${friend.name}</strong>?
+    `,
     );
 
     friendsList.appendChild(card);
@@ -191,6 +205,7 @@ function loadAllFriends(friends = []) {
 }
 
 // QUARTOS
+////////////////////////////////
 function renderRooms() {
   loadAllRooms(allRoomsCache);
 }
@@ -203,7 +218,6 @@ function loadAllRooms(rooms = []) {
     const card = document.createElement("div");
     card.className = "room-card";
 
-    /* thumbnail */
     const img = document.createElement("img");
     img.src = room.thumbnailUrl || "assets/images/roomPlaceholder.png";
     img.onerror = () => {
@@ -211,7 +225,6 @@ function loadAllRooms(rooms = []) {
     };
     img.className = "room-thumb";
 
-    /* info */
     const info = document.createElement("div");
     info.className = "room-info";
 
@@ -222,11 +235,8 @@ function loadAllRooms(rooms = []) {
     desc.textContent = room.description || "";
 
     const date = document.createElement("small");
-    date.textContent =
-      "Data de criação: " +
-      new Date(room.creationTime).toLocaleDateString("pt-BR");
+    date.innerHTML = `<strong>Data de criação:</strong> ${new Date(room.creationTime).toLocaleDateString("pt-BR")}`;
 
-    /* tags */
     const tagsBox = document.createElement("div");
     tagsBox.className = "room-tags";
 
@@ -248,6 +258,7 @@ function loadAllRooms(rooms = []) {
 }
 
 // GROUPS
+////////////////////////////////
 function renderGroups() {
   loadAllGroups(allGroupsCache);
 }
@@ -256,16 +267,14 @@ function loadAllGroups(groups = []) {
   const groupsList = document.getElementById("groups-list");
   groupsList.innerHTML = "";
 
-  groups.forEach(group => {
+  groups.forEach((group) => {
     const card = document.createElement("div");
     card.className = "group-card";
 
-    /* badge */
     const badge = document.createElement("img");
     badge.className = "group-badge";
     badge.src = `https://www.habbo.com.br/habbo-imaging/badge/${group.badgeCode}.gif`;
 
-    /* info */
     const info = document.createElement("div");
     info.className = "group-info";
 
@@ -275,7 +284,6 @@ function loadAllGroups(groups = []) {
     const desc = document.createElement("span");
     desc.textContent = group.description || "";
 
-    /* cores */
     const colors = document.createElement("div");
     colors.className = "group-colors";
 
@@ -301,8 +309,63 @@ function loadAllGroups(groups = []) {
     `Grupos (${groups.length})`;
 }
 
+// NÍVEL
+////////////////////////////////
+function renderLevelInfo(
+  totalExperience = 0,
+  currentLevelCompletePercent = 0,
+  achievements = [],
+  badges = [],
+) {
+  totalExperience = Number(totalExperience) || 0;
+  currentLevelCompletePercent = Number(currentLevelCompletePercent) || 0;
+
+  const achievementsPoints = achievements.reduce(
+    (sum, a) => sum + Number(a.level || 0),
+    0,
+  );
+
+  const badgesCount = badges.filter(
+    (b) => b.code && !b.code.startsWith("ACH_"),
+  ).length;
+
+  let remaining = totalExperience - (achievementsPoints + badgesCount);
+  if (remaining < 0) remaining = 0;
+
+  const roomsPoints = Math.floor(remaining / 2);
+  const mobiPoints = remaining - roomsPoints;
+
+  loadLevelInfo({
+    achievementsPoints,
+    badgesCount,
+    roomsPoints,
+    mobiPoints,
+    totalExperience,
+    currentLevelCompletePercent,
+  });
+}
+function loadLevelInfo({
+  achievementsPoints,
+  badgesCount,
+  roomsPoints,
+  mobiPoints,
+  totalExperience,
+  currentLevelCompletePercent,
+}) {
+  document.getElementById("lvl-achievements").textContent = achievementsPoints;
+  document.getElementById("lvl-badges").textContent = badgesCount;
+  document.getElementById("lvl-rooms").textContent = roomsPoints;
+  document.getElementById("lvl-mobi").textContent = mobiPoints;
+  document.getElementById("lvl-total").textContent = totalExperience;
+
+  const bar = document.getElementById("lvl-progress");
+
+  bar.style.width = `${currentLevelCompletePercent}%`;
+  bar.textContent = `${currentLevelCompletePercent}%`;
+}
 
 // BOTÕES FILTRO
+////////////////////////////////
 toggleAchBtn.addEventListener("click", () => {
   achShow = !achShow;
 
@@ -320,6 +383,7 @@ toggleFriendsBtn.addEventListener("click", () => {
 });
 
 // FETCHs (no futuro terão menos fetchs)
+////////////////////////////////
 async function fetchUserData(username) {
   const res = await fetch(
     `https://www.habbo.com.br/api/public/users?name=${username}`,
@@ -349,17 +413,37 @@ async function fetchUserRooms(id) {
 }
 async function fetchUserGroups(id) {
   const res = await fetch(
-    `https://www.habbo.com.br/api/public/users/${id}/groups`
+    `https://www.habbo.com.br/api/public/users/${id}/groups`,
+  );
+  return res.json();
+}
+async function fetchUserAch(id) {
+  const res = await fetch(
+    `https://www.habbo.com.br/api/public/achievements/${id}`,
   );
   return res.json();
 }
 
 // Bootstrap funcs
-function initTooltips() {
-  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
+////////////////////////////////
+function createTooltip(element, content, options = {}) {
+  element.setAttribute("data-bs-toggle", "tooltip");
+
+  if (content.includes("<")) {
+    element.setAttribute("data-bs-html", "true");
+  }
+
+  element.setAttribute("data-bs-title", content);
+
+  element._tooltipOptions = options;
+}
+
+function initTooltips(scope = document) {
+  scope.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
     new bootstrap.Tooltip(el, {
-      html: true,
       placement: "top",
+      html: el.hasAttribute("data-bs-html"),
+      ...el._tooltipOptions,
     });
   });
 }
@@ -377,4 +461,10 @@ backToTopBtn.addEventListener("click", () => {
     top: 0,
     behavior: "smooth",
   });
+});
+
+const levelModal = new bootstrap.Modal(document.getElementById("levelModal"));
+
+document.getElementById("btnLevel").addEventListener("click", () => {
+  levelModal.show();
 });

@@ -39,8 +39,7 @@ h3 {
 }
 
 .box {
-  max-width: 640px;
-  width: 50%;
+  max-width: 1080px;
   margin: 40px auto;
 }
 .secondaryBox {
@@ -275,6 +274,7 @@ h3 {
   gap: 6px;
   flex-wrap: wrap;
   margin-top: 6px;
+  font-weight: bold;
 }
 
 .room-tag {
@@ -330,9 +330,29 @@ h3 {
   height: 22px;
   border-radius: 4px;
   border: 2px solid #fff;
-  box-shadow: 0 0 0 1px rgba(0,0,0,.2);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
 
+/* modal nível */
+.level-modal {
+  border-radius: 12px;
+  background: #f3f3ed;
+}
+
+.level-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+
+  background: #e3e3dc;
+  border-radius: 6px;
+}
+
+.level-row.total {
+  background: #d7f2d7;
+  font-weight: bold;
+}
 
 /* botão topo */
 
@@ -357,7 +377,7 @@ h3 {
   align-items: center;
   justify-content: center;
 
-  box-shadow: 0 4px 10px rgba(0,0,0,.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   z-index: 999;
 
   transition: 0.2s;
@@ -365,4 +385,45 @@ h3 {
 
 .back-to-top:hover {
   transform: scale(1.1);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+
+    grid-template-areas:
+      "main"
+      "extra";
+  }
+
+  .extra-infos {
+    justify-content: center;
+  }
+
+  .buttons-area {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .equiped-badges {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .room-card {
+    grid-template-columns: 1fr;
+  }
+  .room-info span {
+    word-break: break-word;
+  }
+
+  .group-card {
+    grid-template-columns: 1fr;
+  }
+  .group-info span {
+    word-break: break-word;
+  }
 }

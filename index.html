@@ -61,11 +61,11 @@
               data-bs-toggle="tab"
               data-bs-target="#tab-badges"
               type="button"
+              title="Emblemas"
             >
               <img
                 src="assets/images/achievements.png"
                 alt="Emblemas"
-                title="Emblemas"
               />
             </button>
             <button
@@ -73,11 +73,11 @@
               data-bs-toggle="tab"
               data-bs-target="#tab-friends"
               type="button"
+              title="Amigos"
             >
               <img
                 src="assets\images\friends.png"
                 alt="Amigos"
-                title="Amigos"
               />
             </button>
             <button
@@ -85,11 +85,11 @@
               data-bs-toggle="tab"
               data-bs-target="#tab-rooms"
               type="button"
+              title="Quartos"
             >
               <img
                 src="assets/images/rooms.png"
                 alt="Quartos"
-                title="Quartos"
               />
             </button>
             <button
@@ -97,21 +97,20 @@
               data-bs-toggle="tab"
               data-bs-target="#tab-groups"
               type="button"
+              title="Grupos"
             >
-              <img src="assets/images/group.png" alt="Grupos" title="Grupos" />
+              <img src="assets/images/group.png" alt="Grupos" />
             </button>
-            <button class="btn-icon">
+            <button class="btn-icon" title="Progresso de nível" id="btnLevel" type="button">
               <img
                 src="assets/images/levelprogression.png"
                 alt="Nível"
-                title="Informações de nível"
               />
             </button>
-            <button class="btn-icon">
+            <button class="btn-icon" title="Em breve..." >
               <img
                 src="assets/images/box.png"
                 alt="Em breve"
-                title="Em breve"
               />
             </button>
           </div>
@@ -134,7 +133,7 @@
             />
           </button>
         </div>
-        <div div id="badges-list"></div>
+        <div id="badges-list"></div>
       </div>
 
       <div class="secondaryBox tab-pane fade" id="tab-friends">
@@ -163,6 +162,61 @@
           <h1 id="groupsTitle">Grupos:</h1>
         </div>
         <div id="groups-list" class="groups-grid"></div>
+      </div>
+    </div>
+
+    <!--Modal de nível-->
+    <div class="modal fade" id="levelModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content level-modal">
+          <div class="modal-header">
+            <h5 class="modal-title">Info de nível</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="level-row">
+              <span>Conquistas</span>
+              <b id="lvl-achievements">0</b>
+            </div>
+
+            <div class="level-row">
+              <span>Emblemas</span>
+              <b id="lvl-badges">0</b>
+            </div>
+
+            <div class="level-row">
+              <span>Atividade em Quartos</span>
+              <b id="lvl-rooms">0</b>
+            </div>
+
+            <div class="level-row">
+              <span>Mobi</span>
+              <b id="lvl-mobi">0</b>
+            </div>
+
+            <div class="level-row total">
+              <span>Pontuação total do avatar</span>
+              <b id="lvl-total">0</b>
+            </div>
+
+            <!-- barra -->
+            <div class="progress mt-3" style="height: 22px">
+              <div
+                id="lvl-progress"
+                class="progress-bar bg-success"
+                role="progressbar"
+                style="width: 0%"
+              >
+                0%
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
