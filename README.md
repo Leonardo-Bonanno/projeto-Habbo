@@ -22,8 +22,8 @@ Digite o nome de um usuário Habbo e visualize:
 ✅ Avatar renderizado  
 ✅ Informações do perfil  
 ✅ Emblemas equipados  
-✅ Lista completa de emblemas 
-✅ Lista de amigos
+✅ Lista completa de emblemas, amigos, quartos e grupos
+✅ Filtragem de amigos online e emblemas que não sejam conquistas
 ✅ Navegação por abas  
 
 ---
@@ -41,10 +41,6 @@ Digite o nome de um usuário Habbo e visualize:
 
 ### 🏅 Emblemas
 - Lista completa
-- Tooltip com:
-  - Nome
-  - Código
-  - Descrição
 - Filtro para esconder conquistas (`ACH_`)
 - Contador dinâmico
 
@@ -53,8 +49,16 @@ Digite o nome de um usuário Habbo e visualize:
 - Nome
 - Status online/offline
 - Botão para pesquisar o perfil do amigo
-- Ordenação por status
 - Filtro "somente online"
+
+### 🏣 Quartos e grupos
+- Card individual
+- Informações completas
+
+### ⬆️ Informações de nível
+- Números aproximados de acordo com as APIs
+- Total definitivo
+- Barra de progresso
 
 ### 🧭 Interface
 - Tabs do Bootstrap
@@ -96,7 +100,6 @@ Digite o nome de um usuário Habbo e visualize:
 - Pesquisa na aba de emblemas e amigos
 - Comparar emblemas novos
 - Deploy (GitHub Pages + Render)
-- Modal de informações de nível
 - Modal de conquistas como no jogo
 
 ---
