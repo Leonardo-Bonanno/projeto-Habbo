@@ -26,38 +26,60 @@ let allRoomsCache = [];
 let allGroupsCache = [];
 
 btnSearchInfo.addEventListener("click", async () => {
-  document.getElementById("loading").style.display = "flex";
+  const originalText = btnSearchInfo.innerHTML;
+  btnSearchInfo.disabled = true;
 
-  const data = await fetchUserData(habboInput.value);
+  btnSearchInfo.innerHTML = `
+    <l-square size="25" stroke="3" speed="1.2" color="white"></l-square>
+  `;
 
-  renderProfile(data);
+  let data;
 
-  if (data.profileVisible) {
-    const badges = await fetchUserBadges(data.uniqueId);
-    const friends = await fetchUserFriends(data.uniqueId);
-    const rooms = await fetchUserRooms(data.uniqueId);
-    const groups = await fetchUserGroups(data.uniqueId);
-    const achievements = await fetchUserAch(data.uniqueId);
+  try {
+    if (habboInput.value == null || habboInput.value == "") {
+      throw new Error();
+    }
+    data = await fetchUserData(habboInput.value);
 
-    allBadgesCache = badges;
-    allFriendsCache = friends;
-    allRoomsCache = rooms;
-    allGroupsCache = groups;
+    renderProfile(data);
 
-    renderBadges();
-    renderFriends();
-    renderRooms();
-    renderGroups();
-    renderLevelInfo(
-      data.totalExperience,
-      data.currentLevelCompletePercent,
-      achievements,
-      badges,
-    );
+    if (data.profileVisible) {
+      const [badges, friends, rooms, groups, achievements] = await Promise.all([
+        fetchUserBadges(data.uniqueId),
+        fetchUserFriends(data.uniqueId),
+        fetchUserRooms(data.uniqueId),
+        fetchUserGroups(data.uniqueId),
+        fetchUserAch(data.uniqueId)
+      ]);
+
+      allBadgesCache = badges;
+      allFriendsCache = friends;
+      allRoomsCache = rooms;
+      allGroupsCache = groups;
+
+      renderBadges();
+      renderFriends();
+      renderRooms();
+      renderGroups();
+
+      renderLevelInfo(
+        data.totalExperience,
+        data.currentLevelCompletePercent,
+        achievements,
+        badges
+      );
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao buscar informações do usuário");
+
+  } finally {
+    btnSearchInfo.disabled = false;
+    btnSearchInfo.innerHTML = originalText;
   }
-
-  document.getElementById("loading").style.display = "none";
 });
+
 
 // PERFIL
 ////////////////////////////////
@@ -66,12 +88,12 @@ function renderProfile(data) {
   username.textContent = data.name;
   motto.textContent = data.motto;
 
-  lastSeen.textContent = data.lastAccessTime
-    ? `🕒 Último login: ${new Date(data.lastAccessTime).toLocaleDateString("pt-BR")}`
-    : "🕒 Último login: Status desativado";
+  lastSeen.innerHTML  = data.lastAccessTime
+    ? `🕒 <strong>Último login:</strong> ${new Date(data.lastAccessTime).toLocaleDateString("pt-BR")}`
+    : `🕒 <strong>Último login:</strong> Status desativado`;
   if (data.profileVisible) {
-    createData.innerHTML = `📅 <b>Criação:</b> ${new Date(data.memberSince).toLocaleDateString("pt-BR")}`;
-    level.innerHTML = `⭐ <b>Nível:</b> ${data.currentLevel}`;
+    createData.innerHTML = `📅 <strong>Criação:</strong> ${new Date(data.memberSince).toLocaleDateString("pt-BR")}`;
+    level.innerHTML = `⭐ <strong>Nível:</strong> ${data.currentLevel}`;
     online.textContent = data.online ? "🟢 Online" : "🔴 Offline";
 
     loadSelectedBadges(data.selectedBadges);
