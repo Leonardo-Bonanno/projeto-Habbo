@@ -256,11 +256,21 @@ function loadAllRooms(rooms = []) {
     const desc = document.createElement("span");
     desc.textContent = room.description || "";
 
+    const rating = document.createElement("span");
+    rating.className = "room-rating";
+    rating.textContent = room.rating;
+
     const date = document.createElement("small");
     date.innerHTML = `<strong>Data de criação:</strong> ${new Date(room.creationTime).toLocaleDateString("pt-BR")}`;
 
     const tagsBox = document.createElement("div");
     tagsBox.className = "room-tags";
+
+    const link = document.createElement("a");
+    link.href = `https://www.habbo.com.br/room/${room.id}`;
+    link.className = "btn btn-icon";
+    link.innerHTML = `<img src="assets/images/goTo.png">`;
+    link.target = "_blank",
 
     room.tags.forEach((tag) => {
       const tagEl = document.createElement("span");
@@ -269,8 +279,16 @@ function loadAllRooms(rooms = []) {
       tagsBox.appendChild(tagEl);
     });
 
-    info.append(title, desc, date, tagsBox);
+    info.append(title, desc, date, rating, tagsBox, link);
     card.append(img, info);
+
+    createTooltip(rating,
+       'Pontuação do quarto',
+      )
+    createTooltip(link,
+      'Ir para página do quarto',
+    );
+    initTooltips();
 
     roomsList.appendChild(card);
   });
@@ -319,10 +337,21 @@ function loadAllGroups(groups = []) {
     secondary.style.background = `#${group.secondaryColour}`;
     secondary.title = `Secundária #${group.secondaryColour}`;
 
+    const link = document.createElement("a");
+    link.href = `https://www.habbo.com.br/hotel?room=${group.roomId}`;
+    link.className = "btn btn-icon";
+    link.innerHTML = `<img src="assets/images/goTo.png">`;
+    link.target = "_blank",
+
     colors.append(primary, secondary);
 
-    info.append(title, desc, colors);
+    info.append(title, desc, colors, link);
     card.append(badge, info);
+
+    createTooltip(link,
+      'Ir para quartel do grupo',
+    );
+    initTooltips();
 
     groupsList.appendChild(card);
   });

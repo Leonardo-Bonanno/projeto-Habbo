@@ -267,8 +267,6 @@ button:disabled {
 }
 
 .room-thumb {
-  width: 120px;
-  height: 90px;
   object-fit: cover;
   border-radius: 8px;
 }
@@ -293,6 +291,14 @@ button:disabled {
   padding: 2px 8px;
   border-radius: 6px;
   font-size: 12px;
+}
+
+.room-rating {
+  font-weight: bolder;
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: greenyellow;
 }
 
 /* Grupos */
