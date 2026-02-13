@@ -27,59 +27,47 @@ let allGroupsCache = [];
 
 btnSearchInfo.addEventListener("click", async () => {
   const originalText = btnSearchInfo.innerHTML;
-  btnSearchInfo.disabled = true;
 
+  btnSearchInfo.disabled = true;
   btnSearchInfo.innerHTML = `
     <l-square size="25" stroke="3" speed="1.2" color="white"></l-square>
   `;
 
-  let data;
-
   try {
-    if (habboInput.value == null || habboInput.value == "") {
-      throw new Error();
-    }
-    data = await fetchUserData(habboInput.value);
+    const username = habboInput.value.trim();
 
-    renderProfile(data);
-
-    if (data.profileVisible) {
-      const [badges, friends, rooms, groups, achievements] = await Promise.all([
-        fetchUserBadges(data.uniqueId),
-        fetchUserFriends(data.uniqueId),
-        fetchUserRooms(data.uniqueId),
-        fetchUserGroups(data.uniqueId),
-        fetchUserAch(data.uniqueId)
-      ]);
-
-      allBadgesCache = badges;
-      allFriendsCache = friends;
-      allRoomsCache = rooms;
-      allGroupsCache = groups;
-
-      renderBadges();
-      renderFriends();
-      renderRooms();
-      renderGroups();
-
-      renderLevelInfo(
-        data.totalExperience,
-        data.currentLevelCompletePercent,
-        achievements,
-        badges
-      );
+    if (!username) {
+      throw new Error("Digite um nome válido");
     }
 
+    const data = await fetchFullProfile(username);
+
+    renderProfile(data.profile);
+
+    allBadgesCache = data.badges?.normal || [];
+    allFriendsCache = data.friends || [];
+    allRoomsCache = data.rooms || [];
+    allGroupsCache = data.groups || [];
+
+    renderBadges();
+    renderFriends();
+    renderRooms();
+    renderGroups();
+
+    renderLevelInfo(
+      data.profile.totalExperience,
+      data.profile.currentLevelCompletePercent,
+      data.badges.achievements,
+      data.badges.normal,
+    );
   } catch (err) {
     console.error(err);
-    alert("Erro ao buscar informações do usuário");
-
+    alert(err.message || "Erro ao buscar informações do usuário");
   } finally {
     btnSearchInfo.disabled = false;
     btnSearchInfo.innerHTML = originalText;
   }
 });
-
 
 // PERFIL
 ////////////////////////////////
@@ -88,7 +76,7 @@ function renderProfile(data) {
   username.textContent = data.name;
   motto.textContent = data.motto;
 
-  lastSeen.innerHTML  = data.lastAccessTime
+  lastSeen.innerHTML = data.lastAccessTime
     ? `🕒 <strong>Último login:</strong> ${new Date(data.lastAccessTime).toLocaleDateString("pt-BR")}`
     : `🕒 <strong>Último login:</strong> Status desativado`;
   if (data.profileVisible) {
@@ -270,24 +258,19 @@ function loadAllRooms(rooms = []) {
     link.href = `https://www.habbo.com.br/room/${room.id}`;
     link.className = "btn btn-icon";
     link.innerHTML = `<img src="assets/images/goTo.png">`;
-    link.target = "_blank",
-
-    room.tags.forEach((tag) => {
-      const tagEl = document.createElement("span");
-      tagEl.className = "room-tag";
-      tagEl.textContent = tag;
-      tagsBox.appendChild(tagEl);
-    });
+    ((link.target = "_blank"),
+      room.tags.forEach((tag) => {
+        const tagEl = document.createElement("span");
+        tagEl.className = "room-tag";
+        tagEl.textContent = tag;
+        tagsBox.appendChild(tagEl);
+      }));
 
     info.append(title, desc, date, rating, tagsBox, link);
     card.append(img, info);
 
-    createTooltip(rating,
-       'Pontuação do quarto',
-      )
-    createTooltip(link,
-      'Ir para página do quarto',
-    );
+    createTooltip(rating, "Pontuação do quarto");
+    createTooltip(link, "Ir para página do quarto");
     initTooltips();
 
     roomsList.appendChild(card);
@@ -341,16 +324,12 @@ function loadAllGroups(groups = []) {
     link.href = `https://www.habbo.com.br/hotel?room=${group.roomId}`;
     link.className = "btn btn-icon";
     link.innerHTML = `<img src="assets/images/goTo.png">`;
-    link.target = "_blank",
-
-    colors.append(primary, secondary);
+    ((link.target = "_blank"), colors.append(primary, secondary));
 
     info.append(title, desc, colors, link);
     card.append(badge, info);
 
-    createTooltip(link,
-      'Ir para quartel do grupo',
-    );
+    createTooltip(link, "Ir para quartel do grupo");
     initTooltips();
 
     groupsList.appendChild(card);
@@ -435,43 +414,14 @@ toggleFriendsBtn.addEventListener("click", () => {
 
 // FETCHs (no futuro terão menos fetchs)
 ////////////////////////////////
-async function fetchUserData(username) {
-  const res = await fetch(
-    `https://www.habbo.com.br/api/public/users?name=${username}`,
-  );
-  return res.json();
-}
+async function fetchFullProfile(username) {
+  const res = await fetch(`http://localhost:3000/profile/${username}`);
 
-async function fetchUserBadges(id) {
-  const res = await fetch(
-    `https://www.habbo.com.br/api/public/users/${id}/badges`,
-  );
-  return res.json();
-}
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(msg || "Erro na API");
+  }
 
-async function fetchUserFriends(id) {
-  const res = await fetch(
-    `https://www.habbo.com.br/api/public/users/${id}/friends`,
-  );
-  return res.json();
-}
-
-async function fetchUserRooms(id) {
-  const res = await fetch(
-    `https://www.habbo.com.br/api/public/users/${id}/rooms`,
-  );
-  return res.json();
-}
-async function fetchUserGroups(id) {
-  const res = await fetch(
-    `https://www.habbo.com.br/api/public/users/${id}/groups`,
-  );
-  return res.json();
-}
-async function fetchUserAch(id) {
-  const res = await fetch(
-    `https://www.habbo.com.br/api/public/achievements/${id}`,
-  );
   return res.json();
 }
 
@@ -507,15 +457,13 @@ document.getElementById("btnLevel").addEventListener("click", () => {
 });
 
 function initPopovers() {
-  document
-    .querySelectorAll('[data-bs-toggle="popover"]')
-    .forEach(el => {
-      new bootstrap.Popover(el, {
-        trigger: "hover focus",
-        html: true,
-        placement: "top"
-      });
+  document.querySelectorAll('[data-bs-toggle="popover"]').forEach((el) => {
+    new bootstrap.Popover(el, {
+      trigger: "hover focus",
+      html: true,
+      placement: "top",
     });
+  });
 }
 
 window.addEventListener("scroll", () => {
@@ -532,4 +480,3 @@ backToTopBtn.addEventListener("click", () => {
     behavior: "smooth",
   });
 });
-
