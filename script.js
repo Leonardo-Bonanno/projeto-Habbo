@@ -41,10 +41,11 @@ btnSearchInfo.addEventListener("click", async () => {
     }
 
     const data = await fetchFullProfile(username);
+    console.log(data.badges)
 
     renderProfile(data.profile);
 
-    allBadgesCache = data.badges?.normal || [];
+    allBadgesCache = data.badges;
     allFriendsCache = data.friends || [];
     allRoomsCache = data.rooms || [];
     allGroupsCache = data.groups || [];
@@ -58,7 +59,7 @@ btnSearchInfo.addEventListener("click", async () => {
       data.profile.totalExperience,
       data.profile.currentLevelCompletePercent,
       data.badges.achievements,
-      data.badges.normal,
+      data.badges.counts.badges,
     );
   } catch (err) {
     console.error(err);
@@ -124,11 +125,11 @@ function loadSelectedBadges(badges = []) {
 }
 
 function renderBadges() {
-  const filtered = allBadgesCache.filter(
-    (badge) => achShow || !badge.code.startsWith("ACH_"),
-  );
+  const list = achShow
+    ? allBadgesCache.badges.badges
+    : allBadgesCache.badges.normal;
 
-  loadAllBadges(filtered);
+  loadAllBadges(list);
 }
 
 function loadAllBadges(badges = []) {
@@ -355,9 +356,7 @@ function renderLevelInfo(
     0,
   );
 
-  const badgesCount = badges.filter(
-    (b) => b.code && !b.code.startsWith("ACH_"),
-  ).length;
+  const badgesCount = badges.counts.badges;
 
   let remaining = totalExperience - (achievementsPoints + badgesCount);
   if (remaining < 0) remaining = 0;
