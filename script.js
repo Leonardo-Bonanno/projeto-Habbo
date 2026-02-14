@@ -58,7 +58,7 @@ btnSearchInfo.addEventListener("click", async () => {
     renderLevelInfo(
       data.profile.totalExperience,
       data.profile.currentLevelCompletePercent,
-      data.badges.achievements,
+      data.ach,
       data.badges.counts.badges,
     );
   } catch (err) {
@@ -165,11 +165,11 @@ function loadAllBadges(badges = []) {
 // AMIGOS
 ////////////////////////////////
 function renderFriends() {
-  const filtered = allFriendsCache.filter(
-    (friend) => !friendsOn || friend.online,
-  );
+  const list = friendsOn
+    ? allFriendsCache.online
+    : allFriendsCache.all;
 
-  loadAllFriends(filtered);
+  loadAllFriends(list);
 }
 
 function loadAllFriends(friends = []) {
@@ -351,12 +351,8 @@ function renderLevelInfo(
   totalExperience = Number(totalExperience) || 0;
   currentLevelCompletePercent = Number(currentLevelCompletePercent) || 0;
 
-  const achievementsPoints = achievements.reduce(
-    (sum, a) => sum + Number(a.level || 0),
-    0,
-  );
-
-  const badgesCount = badges.counts.badges;
+  const achievementsPoints = achievements;
+  const badgesCount = badges;
 
   let remaining = totalExperience - (achievementsPoints + badgesCount);
   if (remaining < 0) remaining = 0;
