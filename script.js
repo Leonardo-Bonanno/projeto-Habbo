@@ -497,6 +497,17 @@ function initPopovers() {
   });
 }
 
+function disposeAllTooltips() {
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+
+  tooltipTriggerList.forEach(el => {
+    const tooltipInstance = bootstrap.Tooltip.getInstance(el);
+    if (tooltipInstance) {
+      tooltipInstance.dispose();
+    }
+  });
+}
+
 window.addEventListener("scroll", () => {
   if (window.scrollY > 300) {
     backToTopBtn.style.display = "flex";
@@ -513,5 +524,10 @@ backToTopBtn.addEventListener("click", () => {
 });
 
 badgeSearch.addEventListener("input", () => {
+  disposeAllTooltips();
   filterBadges();
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  querySelectorAll("btn);
+}
