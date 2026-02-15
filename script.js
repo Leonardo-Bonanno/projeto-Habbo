@@ -41,7 +41,6 @@ btnSearchInfo.addEventListener("click", async () => {
     }
 
     const data = await fetchFullProfile(username);
-    console.log(data.badges)
 
     renderProfile(data.profile);
 
@@ -129,20 +128,28 @@ function renderBadges() {
     ? allBadgesCache.badges.badges
     : allBadgesCache.badges.normal;
 
-  loadAllBadges(list);
+  loadAllBadges(list, allBadgesCache.newBadges);
 }
 
-function loadAllBadges(badges = []) {
+function loadAllBadges(badges = [], newBadges = []) {
   badgesList.innerHTML = "";
 
   badges.forEach((badge) => {
     const slot = document.createElement("div");
-    slot.classList.add("badge-slot");
+    slot.classList.add("badge-slot", "position-relative");
 
     const img = document.createElement("img");
     img.src = `https://images.habbo.com/c_images/album1584/${badge.code}.gif`;
 
     slot.appendChild(img);
+
+    if (badge.isNew) {
+      const indicator = document.createElement("span");
+      indicator.className =
+        "position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle";
+      
+      slot.appendChild(indicator);
+    }
 
     createTooltip(
       slot,
@@ -150,7 +157,7 @@ function loadAllBadges(badges = []) {
       <strong>${badge.name}</strong><br>
       Código: ${badge.code}<br>
       ${badge.description}
-      `,
+      `
     );
 
     badgesList.appendChild(slot);
