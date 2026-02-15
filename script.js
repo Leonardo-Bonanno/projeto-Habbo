@@ -13,6 +13,7 @@ const online = document.getElementById("online");
 const equipedBadges = document.getElementById("equiped-badges");
 const badgesList = document.getElementById("badges-list");
 const toggleAchBtn = document.getElementById("toggleAchBtn");
+const badgeSearch = document.getElementById("badge-search");
 
 const friendsList = document.getElementById("friends-list");
 const toggleFriendsBtn = document.getElementById("toggleFriendsBtn");
@@ -123,12 +124,39 @@ function loadSelectedBadges(badges = []) {
   initTooltips();
 }
 
-function renderBadges() {
-  const list = achShow
-    ? allBadgesCache.badges.badges
-    : allBadgesCache.badges.normal;
+function renderBadges(filtered) {
+  if (filtered == null || filtered == "") {
+    const list = achShow
+      ? allBadgesCache.badges.badges
+      : allBadgesCache.badges.normal;
+      loadAllBadges(list, allBadgesCache.newBadges);
+  } else {
+    loadAllBadges(filtered, allBadgesCache.newBadges);
+  }
+}
 
-  loadAllBadges(list, allBadgesCache.newBadges);
+function filterBadges() {
+  const searchTerm = badgeSearch.value;
+
+  const filtered = applyFilter(
+    allBadgesCache.badges.badges,
+    searchTerm,
+  );
+
+  renderBadges(filtered);
+}
+
+function applyFilter(badges, searchTerm) {
+  const term = searchTerm.toLowerCase().trim();
+
+  return badges.filter(badge => {
+    const matchesSearch =
+      badge.code.toLowerCase().includes(term) ||
+      badge.name.toLowerCase().includes(term) ||
+      badge.description.toLowerCase().includes(term);
+
+    return matchesSearch;
+  });
 }
 
 function loadAllBadges(badges = [], newBadges = []) {
@@ -400,6 +428,7 @@ function loadLevelInfo({
 ////////////////////////////////
 toggleAchBtn.addEventListener("click", () => {
   achShow = !achShow;
+  badgeSearch.value = "";
 
   toggleAchBtn.title = achShow ? "Ocultar conquistas" : "Mostrar conquistas";
 
@@ -481,4 +510,8 @@ backToTopBtn.addEventListener("click", () => {
     top: 0,
     behavior: "smooth",
   });
+});
+
+badgeSearch.addEventListener("input", () => {
+  filterBadges();
 });
