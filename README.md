@@ -22,8 +22,8 @@ Digite o nome de um usuário Habbo e visualize:
 ✅ Avatar renderizado  
 ✅ Informações do perfil  
 ✅ Emblemas equipados  
-✅ Lista completa de emblemas, amigos, quartos e grupos
-✅ Filtragem de amigos online e emblemas que não sejam conquistas
+✅ Lista completa de emblemas, amigos, quartos e grupos  
+✅ Filtragem de amigos online e emblemas que não sejam conquistas  
 ✅ Navegação por abas  
 
 ---
@@ -58,7 +58,7 @@ Digite o nome de um usuário Habbo e visualize:
 - Informações completas
 
 ### ⬆️ Informações de nível
-- Números aproximados de acordo com as APIs
+- Números aproximados de acordo com a API
 - Total definitivo
 - Barra de progresso
 
@@ -77,7 +77,7 @@ Digite o nome de um usuário Habbo e visualize:
 - CSS3
 - JavaScript
 - Bootstrap 5
-- API pública do Habbo
+- API própria (Node.js) _https://github.com/Leonardo-Bonanno/Projeto-habboAPI_
 
 ---
 
@@ -97,8 +97,6 @@ Digite o nome de um usuário Habbo e visualize:
 
 ## Adições futuras
 
-- Criar backend próprio (Node.js) _https://github.com/Leonardo-Bonanno/Projeto-habboAPI_
-- Deploy (GitHub Pages + Render)
 - Modal de conquistas como no jogo
 
 ---
