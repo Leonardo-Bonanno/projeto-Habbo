@@ -44,7 +44,7 @@ Digite o nome de um usuário Habbo e visualize:
 - Filtro para esconder conquistas (`ACH_`)
 - Contador dinâmico
 - Indicador de novos emblemas
-- Barra de pesquisas de emblemas
+- Barra de pesquisa
 
 ### 👥 Amigos
 - Avatar do amigo
@@ -98,7 +98,6 @@ Digite o nome de um usuário Habbo e visualize:
 ## Adições futuras
 
 - Criar backend próprio (Node.js) _https://github.com/Leonardo-Bonanno/Projeto-habboAPI_
-- Histórico de consultas
 - Deploy (GitHub Pages + Render)
 - Modal de conquistas como no jogo
 

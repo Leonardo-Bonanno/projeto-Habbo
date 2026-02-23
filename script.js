@@ -443,10 +443,10 @@ toggleFriendsBtn.addEventListener("click", () => {
   renderFriends();
 });
 
-// FETCHs (no futuro terão menos fetchs)
+// FETCH
 ////////////////////////////////
 async function fetchFullProfile(username) {
-  const res = await fetch(`http://localhost:3000/profile/${username}`);
+  const res = await fetch(`https://habbo-avatar-viewer-api.onrender.com/profile/${username}`);
 
   if (!res.ok) {
     const msg = await res.text();
@@ -527,7 +527,3 @@ badgeSearch.addEventListener("input", () => {
   disposeAllTooltips();
   filterBadges();
 });
-
-document.addEventListener("DOMContentLoaded", () => {
-  querySelectorAll("btn);
-}
